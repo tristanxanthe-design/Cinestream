@@ -4,13 +4,10 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Search, Bookmark, Film } from 'lucide-react'
 import { useWatchlist } from '@/context/WatchlistContext'
-import { useDebounce } from '@/hooks/useDebounce'
-
 export function Navbar() {
   const router = useRouter()
   const { watchlist } = useWatchlist()
   const [query, setQuery] = useState('')
-  const debounced = useDebounce(query, 300)
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
