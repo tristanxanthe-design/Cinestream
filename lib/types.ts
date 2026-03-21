@@ -5,12 +5,12 @@ export interface Movie {
   poster_path: string | null
   backdrop_path: string | null
   vote_average: number
-  release_date: string
+  release_date?: string
   genre_ids: number[]
   media_type: 'movie'
   tagline?: string
   runtime?: number
-  genres?: { id: number; name: string }[]
+  genres?: Genre[]
 }
 
 export interface TVShow {
@@ -20,12 +20,12 @@ export interface TVShow {
   poster_path: string | null
   backdrop_path: string | null
   vote_average: number
-  first_air_date: string
+  first_air_date?: string
   genre_ids: number[]
   media_type: 'tv'
   tagline?: string
   number_of_seasons?: number
-  genres?: { id: number; name: string }[]
+  genres?: Genre[]
 }
 
 export type MediaItem = Movie | TVShow
@@ -62,8 +62,8 @@ export interface Video {
   id: string
   key: string
   name: string
-  site: string
-  type: string
+  site: 'YouTube' | 'Vimeo'
+  type: 'Trailer' | 'Teaser' | 'Clip' | 'Featurette' | 'Behind the Scenes' | 'Bloopers'
 }
 
 export interface Genre {
