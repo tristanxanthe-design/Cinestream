@@ -25,6 +25,7 @@ export interface TVShow {
   media_type: 'tv'
   tagline?: string
   number_of_seasons?: number
+  seasons?: Season[]
   genres?: Genre[]
 }
 
