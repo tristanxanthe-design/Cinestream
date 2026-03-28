@@ -1,28 +1,46 @@
-import { notFound } from 'next/navigation'
+'use client'
+import { useState, useEffect, Suspense } from 'react'
+import { useParams, useSearchParams } from 'next/navigation'
 import { getDetails, getSeasonDetails } from '@/lib/tmdb'
 import { Player } from '@/components/Player'
 import { BackButton } from '@/components/BackButton'
-import type { TVShow } from '@/lib/types'
+import type { TVShow, Episode } from '@/lib/types'
 import { TVWatchClient } from './TVWatchClient'
 
-interface Props {
-  params: { id: string }
-  searchParams: { s?: string; e?: string }
-}
-
-export default async function WatchTVPage({ params, searchParams }: Props) {
+function WatchTVContent() {
+  const params = useParams<{ id: string }>()
+  const searchParams = useSearchParams()
   const id = Number(params.id)
-  const season = Number(searchParams.s ?? 1)
-  const episode = Number(searchParams.e ?? 1)
-  if (isNaN(id)) notFound()
+  const season = Number(searchParams.get('s') ?? 1)
+  const episode = Number(searchParams.get('e') ?? 1)
 
-  const [show, seasonData] = await Promise.all([
-    getDetails('tv', id).catch(() => null),
-    getSeasonDetails(id, season).catch(() => null),
-  ])
+  const [show, setShow] = useState<TVShow | null>(null)
+  const [episodes, setEpisodes] = useState<Episode[]>([])
+  const [loading, setLoading] = useState(true)
 
-  if (!show) notFound()
-  const s = show as TVShow
+  useEffect(() => {
+    if (isNaN(id)) return
+    Promise.all([
+      getDetails('tv', id).catch(() => null),
+      getSeasonDetails(id, season).catch(() => null),
+    ]).then(([showData, seasonData]) => {
+      setShow(showData as TVShow)
+      setEpisodes(seasonData?.episodes ?? [])
+    }).finally(() => setLoading(false))
+  }, [id, season])
+
+  if (loading) {
+    return (
+      <div className="pt-16 min-h-screen bg-[#141414]">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="mb-4 h-8 w-24 bg-zinc-800 rounded animate-pulse" />
+          <div className="w-full aspect-video bg-zinc-900 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    )
+  }
+
+  if (!show) return null
 
   return (
     <div className="pt-16 min-h-screen bg-[#141414]">
@@ -33,14 +51,28 @@ export default async function WatchTVPage({ params, searchParams }: Props) {
         <Player type="tv" id={id} season={season} episode={episode} />
         <TVWatchClient
           tvId={id}
-          tvName={s.name}
-          posterPath={s.poster_path}
+          tvName={show.name}
+          posterPath={show.poster_path}
           season={season}
           episode={episode}
-          episodes={seasonData?.episodes ?? []}
-          overview={s.overview}
+          episodes={episodes}
+          overview={show.overview}
         />
       </div>
     </div>
+  )
+}
+
+export default function WatchTVPage() {
+  return (
+    <Suspense fallback={
+      <div className="pt-16 min-h-screen bg-[#141414]">
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="w-full aspect-video bg-zinc-900 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    }>
+      <WatchTVContent />
+    </Suspense>
   )
 }
