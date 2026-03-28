@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Play, Heart, Youtube } from 'lucide-react'
 import { useWatchlist } from '@/context/WatchlistContext'
 import { TrailerModal } from '@/components/TrailerModal'
+import { AddToListButton } from '@/components/AddToListButton'
 
 interface Props {
   movieId: number
@@ -51,6 +52,7 @@ export function MovieDetailClient({ movieId, movieTitle, posterPath, voteAverage
           <Heart size={18} fill={inList ? 'currentColor' : 'none'} />
           {inList ? 'In Watchlist' : 'Add to Watchlist'}
         </button>
+        <AddToListButton itemId={movieId} itemType="movie" itemTitle={movieTitle} posterPath={posterPath} />
         {trailerKey && (
           <button
             onClick={() => setShowTrailer(true)}

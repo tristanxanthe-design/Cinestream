@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, CheckCircle } from 'lucide-react'
 import type { Season, Episode } from '@/lib/types'
 import { getSeasonDetails } from '@/lib/tmdb'
 import { posterURL } from '@/lib/constants'
+import { useProgress } from '@/context/ProgressContext'
 
 interface SeasonPickerProps {
   tvId: number
@@ -17,6 +18,7 @@ export function SeasonPicker({ tvId, seasons }: SeasonPickerProps) {
   const [selected, setSelected] = useState(regularSeasons[0]?.season_number ?? 1)
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(false)
+  const { isWatched, getWatchedCount } = useProgress()
 
   useEffect(() => {
     setLoading(true)
@@ -43,6 +45,20 @@ export function SeasonPicker({ tvId, seasons }: SeasonPickerProps) {
         </select>
         <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
       </div>
+
+      {/* Season progress bar */}
+      {!loading && episodes.length > 0 && (() => {
+        const watchedCount = getWatchedCount(tvId, selected)
+        const pct = Math.round((watchedCount / episodes.length) * 100)
+        return (
+          <div className="mb-4">
+            <p className="text-xs text-zinc-400 mb-1">{watchedCount} / {episodes.length} episodes watched</p>
+            <div className="w-full h-1 bg-zinc-800 rounded">
+              <div className="h-1 bg-red-600 rounded transition-all" style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Episode list */}
       {loading ? (
@@ -79,6 +95,9 @@ export function SeasonPicker({ tvId, seasons }: SeasonPickerProps) {
                 <p className="text-xs text-zinc-400 line-clamp-2">{ep.overview}</p>
                 {ep.air_date && <p className="text-xs text-zinc-500 mt-1">{ep.air_date}</p>}
               </div>
+              {isWatched(tvId, selected, ep.episode_number) && (
+                <CheckCircle size={16} className="text-green-500 shrink-0" />
+              )}
             </Link>
           ))}
         </div>

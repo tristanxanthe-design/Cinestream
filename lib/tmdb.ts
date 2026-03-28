@@ -35,6 +35,10 @@ export function getNowPlaying(page = 1) {
   return tmdbFetch<TMDBResponse<Movie>>('/movie/now_playing', { page })
 }
 
+export function getUpcoming(page = 1) {
+  return tmdbFetch<TMDBResponse<Movie>>('/movie/upcoming', { page })
+}
+
 export function getOnTheAir(page = 1) {
   return tmdbFetch<TMDBResponse<TVShow>>('/tv/on_the_air', { page })
 }
@@ -76,4 +80,61 @@ export function discoverByGenre(mediaType: 'movie' | 'tv', genreId: number, page
 
 export function getGenres(mediaType: 'movie' | 'tv'): Promise<{ genres: Genre[] }> {
   return tmdbFetch(`/genre/${mediaType}/list`)
+}
+
+export interface CollectionDetails {
+  id: number
+  name: string
+  overview: string
+  backdrop_path: string | null
+  poster_path: string | null
+  parts: Array<{
+    id: number
+    title: string
+    overview: string
+    poster_path: string | null
+    backdrop_path: string | null
+    release_date?: string
+    vote_average: number
+    media_type: 'movie'
+  }>
+}
+
+export function getCollection(id: number): Promise<CollectionDetails> {
+  return tmdbFetch(`/collection/${id}`)
+}
+
+export interface Person {
+  id: number
+  name: string
+  profile_path: string | null
+  known_for_department: string
+  biography?: string
+  birthday?: string | null
+  place_of_birth?: string | null
+  popularity: number
+}
+
+export interface CreditItem {
+  id: number
+  title?: string
+  name?: string
+  poster_path: string | null
+  media_type: 'movie' | 'tv'
+  vote_average: number
+  release_date?: string
+  first_air_date?: string
+  popularity: number
+}
+
+export function getTrendingPeople(): Promise<TMDBResponse<Person>> {
+  return tmdbFetch('/trending/person/week')
+}
+
+export function getPersonDetails(id: number): Promise<Person> {
+  return tmdbFetch(`/person/${id}`)
+}
+
+export function getPersonCredits(id: number): Promise<{ cast: CreditItem[] }> {
+  return tmdbFetch(`/person/${id}/combined_credits`)
 }

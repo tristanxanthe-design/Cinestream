@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { WatchlistProvider } from '@/context/WatchlistContext'
+import { ProgressProvider } from '@/context/ProgressContext'
+import { ListsProvider } from '@/context/ListsContext'
 import { Navbar } from '@/components/Navbar'
+import { LayoutTransition } from '@/components/LayoutTransition'
 
 export const metadata: Metadata = {
   title: 'CineStream',
@@ -13,8 +16,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-[#141414] text-white min-h-screen">
         <WatchlistProvider>
-          <Navbar />
-          <main>{children}</main>
+          <ProgressProvider>
+            <ListsProvider>
+              <Navbar />
+              <main>
+                <LayoutTransition>{children}</LayoutTransition>
+              </main>
+            </ListsProvider>
+          </ProgressProvider>
         </WatchlistProvider>
       </body>
     </html>

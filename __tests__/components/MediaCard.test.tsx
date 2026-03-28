@@ -16,7 +16,8 @@ const mockMovie: Movie = {
 describe('MediaCard', () => {
   it('renders movie title', () => {
     render(<MediaCard item={mockMovie} />)
-    expect(screen.getByText('Test Movie')).toBeInTheDocument()
+    // Title appears twice: once in hover overlay, once below card
+    expect(screen.getAllByText('Test Movie').length).toBeGreaterThanOrEqual(1)
   })
 
   it('links to correct movie detail page', () => {
@@ -27,6 +28,7 @@ describe('MediaCard', () => {
 
   it('renders rating badge', () => {
     render(<MediaCard item={mockMovie} />)
-    expect(screen.getByText('8.0')).toBeInTheDocument()
+    // Rating badge appears twice: once in hover overlay, once below card
+    expect(screen.getAllByText('8.0').length).toBeGreaterThanOrEqual(1)
   })
 })

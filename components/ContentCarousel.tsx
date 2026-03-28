@@ -1,5 +1,6 @@
 'use client'
 import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { MediaItem } from '@/lib/types'
 import { MediaCard } from './MediaCard'
@@ -9,6 +10,19 @@ interface ContentCarouselProps {
   title: string
   items: MediaItem[]
   loading?: boolean
+}
+
+const containerVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+}
+
+const itemVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
 }
 
 export function ContentCarousel({ title, items, loading = false }: ContentCarouselProps) {
@@ -21,8 +35,8 @@ export function ContentCarousel({ title, items, loading = false }: ContentCarous
   }
 
   return (
-    <section className="mb-8">
-      <h2 className="text-lg font-bold text-white mb-3 px-6">{title}</h2>
+    <section className="mb-6">
+      <h2 className="text-lg font-semibold text-white mb-3 px-6">{title}</h2>
       <div className="relative group/carousel">
         <button
           onClick={() => scroll('left')}
@@ -32,15 +46,23 @@ export function ContentCarousel({ title, items, loading = false }: ContentCarous
           <ChevronLeft className="text-white" size={28} />
         </button>
 
-        <div
+        <motion.div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto no-scrollbar px-6 scroll-smooth"
+          className="flex gap-3 overflow-x-auto scrollbar-hide px-6"
+          key={items.length}
+          variants={containerVariants}
+          initial="initial"
+          animate="animate"
         >
           {loading
             ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-            : items.map((item) => <MediaCard key={item.id} item={item} />)
+            : items.map((item) => (
+                <motion.div key={item.id} variants={itemVariants}>
+                  <MediaCard item={item} />
+                </motion.div>
+              ))
           }
-        </div>
+        </motion.div>
 
         <button
           onClick={() => scroll('right')}

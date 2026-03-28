@@ -3,7 +3,9 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useWatchlist } from '@/context/WatchlistContext'
+import { useProgress } from '@/context/ProgressContext'
 import type { Episode } from '@/lib/types'
+import { WatchPageShortcuts } from '@/components/WatchPageShortcuts'
 
 interface Props {
   tvId: number
@@ -17,6 +19,7 @@ interface Props {
 
 export function TVWatchClient({ tvId, tvName, posterPath, season, episode, episodes, overview }: Props) {
   const { addToHistory } = useWatchlist()
+  const { markWatched } = useProgress()
   const currentEp = episodes.find((e) => e.episode_number === episode)
   const prevEp = episodes.find((e) => e.episode_number === episode - 1)
   const nextEp = episodes.find((e) => e.episode_number === episode + 1)
@@ -27,10 +30,12 @@ export function TVWatchClient({ tvId, tvName, posterPath, season, episode, episo
       poster_path: posterPath, season, episode,
       watchedAt: new Date().toISOString(),
     })
+    markWatched(tvId, season, episode)
   }, [tvId, season, episode]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="mt-6">
+      <WatchPageShortcuts />
       <h1 className="text-2xl font-bold text-white mb-1">{tvName}</h1>
       {currentEp && (
         <p className="text-zinc-400 text-sm mb-2">

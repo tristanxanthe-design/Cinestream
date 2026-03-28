@@ -20,8 +20,9 @@ describe('ContentCarousel', () => {
 
   it('renders all items', () => {
     render(<ContentCarousel title="Trending" items={mockItems} />)
-    expect(screen.getByText('Movie 1')).toBeInTheDocument()
-    expect(screen.getByText('Movie 2')).toBeInTheDocument()
+    // Title appears twice per card: once in hover overlay, once below card
+    expect(screen.getAllByText('Movie 1').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Movie 2').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders skeleton cards when loading', () => {

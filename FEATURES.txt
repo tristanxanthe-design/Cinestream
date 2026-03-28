@@ -1,0 +1,216 @@
+# CineStream — Feature & UI Overhaul Spec
+# Read this file and implement everything listed below.
+
+# ============================================================
+# SECTION 1: UI/UX POLISH (DO THIS FIRST)
+# ============================================================
+
+## 1.1 — Media Card Hover Effect
+- When hovering on a movie/TV card, show a smooth overlay with:
+  - Play button icon (lucide-react PlayCircle, centered, size 48)
+  - Title text at the bottom
+  - Rating badge (color-coded: green >7, yellow >5, red <5)
+  - Release year
+- The card should scale up slightly (scale-105) with transition-transform duration-200
+- The overlay should fade in with a dark gradient from bottom (bg-gradient-to-t from-black/80 to-transparent)
+- Overlay opacity transitions from 0 to 100 on hover
+
+## 1.2 — Smooth Transitions
+- Add framer-motion page transitions between ALL routes (fade + slight slide up)
+- Cards should animate in with a staggered fade-up effect when the page loads
+  - Each card delays by 50ms more than the previous
+  - Use framer-motion's staggerChildren
+- Carousels should scroll smoothly with scroll-behavior: smooth
+- Hero banner text should fade in on page load
+
+## 1.3 — Layout Fixes
+- Reduce spacing between carousels on the homepage (gap-8 max between sections)
+- Hero banner should be at least 70vh tall with a strong gradient fade at bottom
+- Cards should have NO visible borders — only subtle shadow on hover (shadow-lg shadow-black/30)
+- Consistent rounded-lg corners on every card, button, and input
+- Navbar: transparent at top, adds bg-black/80 backdrop-blur-md on scroll (use scroll event listener)
+- Skeleton loaders (animated pulse) while images and data load — no empty white space ever
+
+## 1.4 — Typography
+- Card titles: text-sm font-medium text-white
+- Secondary info (year, genre): text-xs text-zinc-400
+- Section/carousel headings: text-lg font-semibold text-white
+- Hero title: text-4xl md:text-6xl font-bold
+- Hero overview: text-sm md:text-base text-zinc-300 line-clamp-3
+- Consistent font throughout — no mixing
+
+## 1.5 — Scrollbar
+- Hide default scrollbar on all carousels
+- Add custom thin scrollbar in globals.css:
+  - Track: transparent
+  - Thumb: bg-zinc-700 rounded-full, 4px wide
+  - Thumb on hover: bg-zinc-500
+- Use scrollbar-hide utility class on carousel containers
+- Add to globals.css:
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+# ============================================================
+# SECTION 2: NEW FEATURES — UI/UX
+# ============================================================
+
+## 2.1 — Continue Watching Row
+- Track when a user visits a watch page — save to localStorage:
+  - key: "cinestream_history"
+  - value: array of { id, type, title, poster_path, season?, episode?, watchedAt }
+- Show a "Continue Watching" carousel as the FIRST row on the homepage (above trending)
+- Only show if there are items in history
+- Most recently watched first
+- Clicking resumes — for TV, link back to the exact season/episode
+
+## 2.2 — Trailer Autoplay on Hover
+- When a user hovers on a MediaCard for 2+ seconds, fetch the trailer from TMDB getVideos
+- Replace the poster image with a muted YouTube embed (autoplay, muted, no controls)
+- When the user moves the mouse away, revert back to the poster
+- Use a timeout ref — clear it if the user leaves before 2 seconds
+- Only attempt this on desktop (check window width > 768px)
+- If no trailer exists, just keep the poster
+
+## 2.3 — Keyboard Shortcuts
+- Global keyboard listener (useEffect on document):
+  - "/" → focus the search input
+  - "Escape" → go back (router.back())
+- On watch pages only:
+  - "F" → toggle fullscreen on the iframe container
+  - Spacebar → (note: won't work inside iframe, but add the listener anyway for when focus is outside)
+
+## 2.4 — Random Pick Button
+- Add a dice/shuffle icon button in the navbar next to search
+- On click:
+  - Fetch trending movies (day)
+  - Filter to rating > 7.0
+  - Pick a random one
+  - Navigate to its detail page
+- Show a brief "Finding something great..." loading state with a spinning animation
+
+
+# ============================================================
+# SECTION 3: NEW FEATURES — CONTENT DISCOVERY
+# ============================================================
+
+## 3.1 — Collections / Lists
+- New page: /collections
+- Fetch popular collections from TMDB (endpoint: /collection/{id})
+- Hardcode a curated list of collection IDs to start:
+  - 10: Star Wars
+  - 131296: Marvel Cinematic Universe (variant)
+  - 1241: Harry Potter
+  - 119: Lord of the Rings
+  - 528: The Dark Knight
+  - 2150: Shrek
+  - 87096: Avatar
+  - 748: X-Men
+  - 9485: Fast & Furious
+  - 656: Pirates of the Caribbean
+- Each collection shows as a card with backdrop image
+- Clicking opens collection detail with all movies in order
+- Add "Collections" link to the navbar
+
+## 3.2 — "Because You Watched" Recommendations
+- On the homepage, if watch history has items:
+  - Take the most recent 3 watched titles
+  - For each, fetch TMDB getSimilar
+  - Deduplicate results
+  - Show as a carousel: "Because you watched {title}"
+- Only show the first one to avoid clutter (pick the most recent watch)
+- If history is empty, don't show this section
+
+## 3.3 — Trending People
+- New section on homepage: "Trending People" carousel
+- Use TMDB endpoint: /trending/person/week
+- Show profile photo, name, known_for department
+- Clicking a person → /person/[id] page showing:
+  - Bio, profile image, birthday, place of birth
+  - Filmography grid (combined_credits from TMDB)
+  - Sort by popularity or release date
+
+## 3.4 — Upcoming Releases
+- New page: /upcoming
+- Fetch from TMDB /movie/upcoming
+- Display as a grid sorted by release date
+- Each card shows the poster, title, and release date
+- Titles not yet released show a "Coming Soon" badge overlay
+- Add "Upcoming" link to navbar or homepage section
+
+
+# ============================================================
+# SECTION 4: NEW FEATURES — QUALITY OF LIFE
+# ============================================================
+
+## 4.1 — Multiple Embed Sources
+- Create a config file: src/lib/providers.ts
+- Define an array of embed providers:
+
+  export const PROVIDERS = [
+    {
+      name: "Vidking",
+      baseUrl: "https://www.vidking.net",
+      moviePattern: "/embed/movie/{id}",
+      tvPattern: "/embed/tv/{id}/{season}/{episode}",
+      params: "?autoPlay=true&nextEpisode=true&episodeSelector=true&color=e50914"
+    },
+    {
+      name: "VidSrc",
+      baseUrl: "https://vidsrc.cc/v2",
+      moviePattern: "/embed/movie/{id}",
+      tvPattern: "/embed/tv/{id}/{season}/{episode}",
+      params: ""
+    },
+    {
+      name: "VidSrc ICU",
+      baseUrl: "https://vidsrc.icu",
+      moviePattern: "/embed/movie/{id}",
+      tvPattern: "/embed/tv/{id}/{season}/{episode}",
+      params: ""
+    }
+  ];
+
+- On the watch page, show a dropdown/pill selector above the player to switch providers
+- Default to the first provider
+- Save the user's preferred provider to localStorage
+- If a provider fails/404s, show a message suggesting they try another source
+
+## 4.2 — Request Tracking
+- New page: /requests
+- Simple form: title input + type selector (movie/TV) + notes textarea
+- Save to localStorage key: "cinestream_requests"
+- Display as a list with:
+  - Title, type, date added, notes
+  - Delete button per item
+  - "Check availability" button that searches TMDB and links to the detail page
+- Add "Requests" link in navbar or as a sub-menu item
+
+## 4.3 — Watch Party (Ngrok)
+- Add a button in settings or navbar: "Share with Friends"
+- On click, show instructions modal:
+  - Step 1: Install ngrok (link to ngrok.com)
+  - Step 2: Run: ngrok http 3000
+  - Step 3: Share the generated URL
+- If possible, add a one-click script that runs ngrok automatically:
+  - Button triggers a fetch to a local API route /api/ngrok
+  - API route spawns ngrok process and returns the public URL
+  - Display the URL with a copy button
+- This is a stretch goal — implement the instruction modal first, auto-launch second
+
+
+# ============================================================
+# IMPLEMENTATION ORDER
+# ============================================================
+# 1. UI polish (Section 1) — do all of this first
+# 2. Multiple embed sources (4.1) — critical for usability
+# 3. Continue watching (2.1) — high value, easy
+# 4. Keyboard shortcuts (2.3) — quick win
+# 5. Random pick (2.4) — quick win
+# 6. Because you watched (3.2) — depends on 2.1
+# 7. Collections (3.1) — new page
+# 8. Trending people (3.3) — new page
+# 9. Upcoming releases (3.4) — new page
+# 10. Trailer autoplay (2.2) — complex, do last in UI features
+# 11. Request tracking (4.2) — nice to have
+# 12. Watch party (4.3) — stretch goal

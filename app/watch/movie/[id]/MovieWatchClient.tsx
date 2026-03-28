@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useWatchlist } from '@/context/WatchlistContext'
+import { WatchPageShortcuts } from '@/components/WatchPageShortcuts'
 
 interface Props {
   movieId: number
@@ -21,6 +22,7 @@ export function MovieWatchClient({ movieId, movieTitle, posterPath, overview }: 
 
   return (
     <div className="mt-6">
+      <WatchPageShortcuts />
       <h1 className="text-2xl font-bold text-white mb-2">{movieTitle}</h1>
       <p className="text-zinc-400 text-sm leading-relaxed max-w-3xl">{overview}</p>
     </div>
