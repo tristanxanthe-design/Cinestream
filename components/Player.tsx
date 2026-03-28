@@ -24,8 +24,22 @@ export function Player({ type, id, season, episode }: PlayerProps) {
     })
   }, [])
 
+  const FALLBACK_BASE = "https://www.vidking.net"
+  const baseUrl = process.env.NEXT_PUBLIC_EMBED_BASE_URL || FALLBACK_BASE
+
   const provider = PROVIDERS[selectedIndex] ?? PROVIDERS[0]
-  const src = buildEmbedUrl(provider, type, id, season, episode)
+
+  let src: string
+  if (selectedIndex === 0) {
+    // Vidking — build explicitly so the path is always appended
+    src = type === 'movie'
+      ? `${baseUrl}/embed/movie/${id}`
+      : `${baseUrl}/embed/tv/${id}/${season ?? 1}/${episode ?? 1}`
+  } else {
+    src = buildEmbedUrl(provider, type, id, season, episode)
+  }
+
+  console.log('[Player] src:', src)
 
   const pills = (
     <div className="flex flex-wrap gap-2 mb-3">
