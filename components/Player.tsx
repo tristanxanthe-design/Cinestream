@@ -87,6 +87,7 @@ export function Player({ type, id, season, episode }: PlayerProps) {
         src={src}
         title="Video Player"
         className="w-full aspect-video rounded-lg"
+        sandbox="allow-same-origin allow-scripts allow-forms"
         referrerPolicy="origin"
         allowFullScreen={true}
         onError={() => setFailed(true)}

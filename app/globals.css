@@ -2,158 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ═══════════════════════════════════════
-   CINESTREAM — CONCEPT 1: SIDEBAR DASHBOARD
-   Outfit font, Netflix/TinyMoviez style
-═══════════════════════════════════════ */
-
 :root {
-  --bg-page:    #0c0c14;
-  --bg-sidebar: #0f0f18;
-  --bg-card:    rgba(255,255,255,0.03);
-  --border-card: rgba(255,255,255,0.05);
-  --border-sidebar: rgba(255,255,255,0.06);
-  --color-red:  #e50914;
-  --color-red-hover: #ff1a26;
-  --color-red-subtle: rgba(229,9,20,0.08);
-  --text-primary:   #ffffff;
-  --text-secondary: rgba(255,255,255,0.4);
-  --text-tertiary:  rgba(255,255,255,0.2);
-  --green: #46d369;
-  --yellow: #f5c518;
-  --r-card:   14px;
-  --r-btn:    100px;
-  --r-sidebar-link: 10px;
-  --r-hero:   16px;
-  --r-genre:  10px;
-  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --background: #141414;
+  --foreground: #ffffff;
 }
-
-*, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  background-color: #141414;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ── Cards ─────────────────────────── */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-card);
-  border-radius: var(--r-card);
-  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+/* Custom thin scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
-.card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-/* ── Buttons ───────────────────────── */
-.btn-red {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--color-red);
-  color: #fff; border-radius: var(--r-btn);
-  padding: 8px 18px; font-size: 13px; font-weight: 600;
-  font-family: 'Outfit', sans-serif; border: none; cursor: pointer;
-  transition: background 0.15s var(--ease-out), transform 0.15s var(--ease-out);
-  min-height: 36px;
+::-webkit-scrollbar-thumb {
+  background: #3f3f46; /* zinc-700 */
+  border-radius: 9999px;
 }
-.btn-red:hover { background: var(--color-red-hover); transform: translateY(-1px); }
-.btn-red:active { transform: scale(0.97); }
-.btn-red:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(229,9,20,0.4); }
-
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.08);
-  color: #fff; border-radius: var(--r-btn);
-  padding: 8px 18px; font-size: 13px; font-weight: 500;
-  font-family: 'Outfit', sans-serif;
-  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
-  transition: background 0.15s var(--ease-out), transform 0.15s var(--ease-out);
-  min-height: 36px;
-}
-.btn-ghost:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
-.btn-ghost:active { transform: scale(0.97); }
-.btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(229,9,20,0.3); }
-
-/* ── Sidebar link ──────────────────── */
-.sidebar-link {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--r-sidebar-link);
-  color: var(--text-secondary);
-  font-size: 13px; font-weight: 500;
-  text-decoration: none;
-  transition: all 0.15s var(--ease-out);
-  white-space: nowrap;
-  overflow: hidden;
-}
-.sidebar-link:hover { background: rgba(255,255,255,0.03); color: var(--text-primary); }
-.sidebar-link.active { background: var(--color-red-subtle); color: var(--color-red); }
-.sidebar-link:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(229,9,20,0.3); border-radius: var(--r-sidebar-link); }
-
-/* ── Genre card ────────────────────── */
-.genre-card {
-  border-radius: var(--r-genre);
-  border: 1px solid rgba(255,255,255,0.06);
-  padding: 12px 8px;
-  text-align: center;
-  font-size: 12px; font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s var(--ease-out);
-}
-.genre-card:hover { background: var(--color-red-subtle); border-color: rgba(229,9,20,0.3); color: var(--color-red); }
-
-/* ── Skeleton ──────────────────────── */
-.skeleton {
-  border-radius: 4px;
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
-}
-@keyframes skeleton-pulse {
-  0%, 100% { background: rgba(255,255,255,0.04); }
-  50%       { background: rgba(255,255,255,0.08); }
+::-webkit-scrollbar-thumb:hover {
+  background: #71717a; /* zinc-500 */
 }
 
-/* ── Scrollbars ────────────────────── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-.scrollbar-hide::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar { display: none; }
-.scrollbar-hide, .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* ── Focus rings ───────────────────── */
-a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(229,9,20,0.3);
-  border-radius: 6px;
+/* Hide scrollbar for carousels but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* ── Fade in ───────────────────────── */
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
-.fade-in { animation: fade-in 0.4s var(--ease-out) both; }
-
-/* ── Stagger children ──────────────── */
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 30ms; }
-.stagger > *:nth-child(3) { animation-delay: 60ms; }
-.stagger > *:nth-child(4) { animation-delay: 90ms; }
-.stagger > *:nth-child(5) { animation-delay: 120ms; }
-.stagger > *:nth-child(6) { animation-delay: 150ms; }
-
-/* ── Smooth scroll ─────────────────── */
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
-
-/* ── Reduced motion ────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

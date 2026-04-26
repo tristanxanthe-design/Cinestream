@@ -47,9 +47,6 @@ export default function WatchMoviePage() {
           movieTitle={movie.title}
           posterPath={movie.poster_path}
           overview={movie.overview}
-          voteAverage={movie.vote_average}
-          releaseDate={movie.release_date}
-          runtime={movie.runtime}
         />
       </div>
     </div>

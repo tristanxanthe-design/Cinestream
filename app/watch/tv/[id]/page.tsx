@@ -58,7 +58,6 @@ function WatchTVContent() {
           episodes={episodes}
           seasons={(show.seasons ?? []).filter((s) => s.season_number > 0 && s.episode_count > 0)}
           overview={show.overview}
-          voteAverage={show.vote_average}
         />
       </div>
     </div>
