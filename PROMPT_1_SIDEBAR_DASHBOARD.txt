@@ -1,0 +1,130 @@
+# CONCEPT 1 — SIDEBAR DASHBOARD LAYOUT
+# Paste this entire file into Claude Code as a prompt.
+# Based on the TinyMoviez/Netflix dashboard design with persistent sidebar + 3-column layout.
+
+Redesign the entire CineStream frontend to use a SIDEBAR DASHBOARD LAYOUT. This is a complete UI overhaul. Every page must follow this new design system. Read CLAUDE.md for project context, then implement this design across all pages.
+
+## DESIGN SYSTEM
+
+### Font
+Import and use Outfit from Google Fonts: `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap')`
+Set globally: `font-family: 'Outfit', sans-serif`
+
+### Colors
+- Page background: #0c0c14
+- Sidebar background: #0f0f18
+- Card background: rgba(255,255,255,0.03)
+- Card border: 1px solid rgba(255,255,255,0.05)
+- Primary red: #e50914
+- Text primary: #ffffff
+- Text secondary: rgba(255,255,255,0.4)
+- Text tertiary: rgba(255,255,255,0.2)
+- Rating green: #46d369
+- Rating yellow: #f5c518
+- Star color: #f5c518
+- Button red bg: #e50914
+- Button ghost bg: rgba(255,255,255,0.08)
+- Hover states: rgba(255,255,255,0.03) on cards, rgba(229,9,20,0.08) on active items
+
+### Border Radius
+- Cards: 14px
+- Buttons: 100px (pill shape)
+- Sidebar links: 10px
+- Hero banner: 16px
+- Genre cards: 10px
+
+### Layout Structure (EVERY page)
+```
+[Sidebar 220px] [Main Content (flex: 1)]
+```
+The sidebar is FIXED on every page. The main content area scrolls independently.
+
+## SIDEBAR (persistent, all pages)
+- Width: 220px, full height, bg: #0f0f18, border-right: 1px solid rgba(255,255,255,0.06)
+- Top: "CINESTREAM" logo in gradient text (linear-gradient 135deg, #e50914 to #ff4d58)
+- Menu section label: "Menu" — uppercase, 10px, letter-spacing 2px, color rgba(255,255,255,0.2)
+- Links: Home, Discover, Awards, Celebrities — each with a lucide icon on the left
+- Active link: color #e50914, bg rgba(229,9,20,0.08)
+- Inactive links: color rgba(255,255,255,0.4), hover shows rgba(255,255,255,0.03) bg
+- Library section label: "Library"
+- Links: Recent, Top Rated, Downloaded, Playlists, Watchlist, Completed
+- Bottom (margin-top auto): Settings link, border-top separator
+
+## TOP BAR (inside main content area)
+- Horizontal tabs: Movies, TV Shows, Anime — active tab has color #e50914 with red bottom border
+- Search pill on the right: rounded-full, bg rgba(255,255,255,0.05), border rgba(255,255,255,0.08), search icon + placeholder text
+- Filter icon button next to search
+- User section: name "Xanthe" + avatar circle (gradient red bg, letter "X")
+
+## HOMEPAGE LAYOUT (3 columns inside main content)
+```
+[Center Column (flex: 1)] [Right Column (260px)]
+```
+
+### Center Column:
+1. HERO BANNER (280px tall, rounded-16px):
+   - Full-width gradient background simulating a movie backdrop
+   - Overlay gradient from left: rgba(12,12,20,0.95) to transparent
+   - Title at bottom-left: 32px font-weight 800
+   - Two buttons: "+ Watchlist" (ghost) and "Watch Now" (red pill)
+   - Left/right navigation arrows (circular, bg rgba(0,0,0,0.4) with blur)
+   - Dot indicators at bottom center (active dot is red and wider/pill-shaped)
+   - Auto-rotate between trending titles every 6s
+
+2. POPULAR SECTION:
+   - Header: "Popular on CineStream"
+   - Row of 3 cards (equal width, 200px tall, rounded-14px)
+   - Each card: gradient background, overlay from bottom with title, star rating (yellow stars), episode count, genre, "+" button and "Watch" red pill button
+   - Hover: scale 1.03
+
+### Right Column (260px):
+1. CONTINUE WATCHING section:
+   - Header: "Continue" with "See More >" link
+   - Cards: horizontal layout with 44px thumbnail, title, "X Episodes left", Drop + Watch buttons
+
+2. TOP RATED section:
+   - Same card format as Continue Watching
+   - Shows episode count and genre
+
+3. GENRES section:
+   - 2-column grid of genre cards (56px tall each)
+   - Each card: centered genre name, subtle border
+   - Hover: red tint bg, red border, red text
+
+## DETAIL PAGE
+- Keep sidebar layout
+- Full-width backdrop at top with gradient overlay
+- Title, meta info, description
+- Cast horizontal scroll
+- Season/episode picker for TV shows
+- Watch Now and Watchlist buttons
+
+## WATCH PAGE
+- Keep sidebar layout
+- Full-width player iframe
+- Below player: show info, server selector pills, season/episode list on the right
+- Currently playing episode highlighted with red left border
+
+## SEARCH PAGE
+- Keep sidebar layout
+- Search input at top
+- Results as grid cards matching the Popular card style
+
+## BROWSE PAGES (Movies, TV Shows)
+- Keep sidebar layout
+- Genre filter bar at top
+- Responsive grid of poster cards
+
+## ANIMATIONS
+- All cards: transition transform 0.2s, hover scale 1.03
+- Sidebar links: transition all 0.15s
+- Hero banner: crossfade between titles, dot indicator animation
+- Page content: fade in on route change using framer-motion
+- Cards stagger in with 30ms delay each
+
+## RESPONSIVE
+- Below 1024px: sidebar collapses to icons only (48px wide)
+- Below 768px: sidebar becomes bottom tab bar, right column stacks below center
+- Mobile: single column layout, hero becomes 200px tall
+
+Implement this across ALL pages. Start with the layout shell (sidebar + top bar), then homepage, then detail, watch, search, and browse pages.
