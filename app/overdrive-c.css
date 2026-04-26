@@ -1,0 +1,23 @@
+/* === OVERDRIVE C: WebGL Shader Background === */
+
+/* Hide CSS grid-floor when WebGL canvas is active */
+.grid-floor {
+  display: none;
+}
+
+/* On mobile — disable WebGL canvas, show CSS fallback orbs */
+@media (max-width: 768px) {
+  canvas[aria-hidden="true"] {
+    display: none !important;
+  }
+  .orb {
+    display: block !important;
+  }
+}
+
+/* Reduced motion — disable floating animation on fallback orbs */
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none !important;
+  }
+}

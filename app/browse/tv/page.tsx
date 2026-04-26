@@ -1,9 +1,7 @@
-import { getGenres } from '@/lib/tmdb'
-import { BrowseClient } from '../movies/BrowseClient'
+import BrowseClient from '../movies/BrowseClient'
 
 export const metadata = { title: 'Browse TV Shows — CineStream' }
 
-export default async function BrowseTVPage() {
-  const genreData = await getGenres('tv').catch(() => ({ genres: [] }))
-  return <BrowseClient mediaType="tv" genres={genreData.genres} />
+export default function BrowseTVPage() {
+  return <BrowseClient mediaType="tv" title="Browse TV Shows" />
 }

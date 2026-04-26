@@ -1,0 +1,326 @@
+# CONCEPT 3 REMIX — PREMIUM $10K DESIGN + IMPECCABLE WORKFLOW
+# Paste this entire file into Claude Code as a prompt.
+#
+# PREREQUISITE: Install Impeccable first by running in your terminal:
+#   npx skills add pbakaus/impeccable
+# Then run /teach-impeccable once inside Claude Code to set up design context.
+#
+# This prompt combines the ultra-refined editorial design with Impeccable's
+# command workflow for agency-quality output.
+
+## PHASE 1: SETUP & CONTEXT
+
+First, run:
+/teach-impeccable
+
+When it asks questions, answer with this context:
+- Project: CineStream — a local streaming app (movies, TV, anime)
+- Aesthetic: Editorial luxury, cinematic restraint, Apple-level polish
+- Brand colors: CineStream red #e50914 (primary accent, used sparingly), tinted dark #030305 (base)
+- Typography: Playfair Display (serif display/headings), Instrument Sans (sans body/UI)
+- Audience: Personal use, single user, design-conscious
+- Mood: Sophisticated, cinematic, minimal but rich, every pixel intentional
+- Anti-patterns to avoid: Generic AI look, Inter font, purple gradients, cards-in-cards, bounce easing, gray text on colored backgrounds
+
+---
+
+## PHASE 2: BUILD THE PREMIUM DESIGN
+
+Read CLAUDE.md for project context, then implement this design across ALL pages.
+Do NOT push to GitHub or commit. Only apply locally for localhost testing.
+
+### DESIGN PHILOSOPHY
+- RESTRAINT over excess — every element earns its place
+- TYPOGRAPHY-DRIVEN — the type system carries the design, not decorations
+- CINEMATIC — movie posters and backdrops are the visual centerpiece, UI gets out of the way
+- MICRO-INTERACTIONS everywhere — hover states, focus states, transitions on everything
+- AMBIENT — subtle background glows and noise texture create atmosphere without distraction
+- NO DECORATION FOR DECORATION'S SAKE — if it doesn't serve the content, remove it
+
+### DESIGN SYSTEM
+
+**Fonts:**
+```css
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap');
+```
+- Hero/movie titles: Playfair Display, 900 weight — elegant serif that makes titles feel cinematic
+- Section headings: Instrument Sans, 700 weight — clean and modern
+- Body text: Instrument Sans, 400 weight — highly legible
+- Labels/meta: Instrument Sans, 600 weight — small uppercase with letter-spacing
+
+**Type Scale (strict — no deviations):**
+- Hero title: Playfair Display, 56px, weight 900, letter-spacing -2px, line-height 0.92
+- Movie title on detail page: Playfair Display, 40px, weight 900, letter-spacing -1.5px
+- Section title: Instrument Sans, 15px, weight 700, with extending hairline
+- Card titles: Instrument Sans, 12-13px, weight 700
+- Body/descriptions: Instrument Sans, 14px, weight 400, line-height 1.8, color rgba(255,255,255,0.3)
+- Labels/badges: Instrument Sans, 10-11px, weight 600, uppercase, letter-spacing 1px
+- Tiny meta: Instrument Sans, 9-10px, weight 500
+
+**Colors:**
+- Page background: #030305 (near-black, NOT pure black)
+- Surface cards: rgba(255,255,255,0.02)
+- Borders: rgba(255,255,255,0.05) — barely visible, creates separation
+- Hover borders: rgba(255,255,255,0.1)
+- Primary red: #e50914
+- Red hover: #ff1a26
+- Red glow shadow: 0 4px 24px rgba(229,9,20,0.4)
+- Text primary: #ffffff
+- Text body: rgba(255,255,255,0.3)
+- Text muted: rgba(255,255,255,0.15)
+- Rating green: #46d369 with bg rgba(70,211,105,0.12)
+- Rating yellow: #f5c518 with bg rgba(245,197,24,0.12)
+- Glass panels: rgba(255,255,255,0.04) bg, rgba(255,255,255,0.06) border, backdrop-filter blur(10px)
+
+**Border Radius:**
+- Glass cards/panels: 20px
+- Media cards: 14px
+- Buttons: 12px (NOT pill — intentionally squared-off for premium feel)
+- Icon buttons: 50% (circle)
+- Badges/pills: 100px
+- Rating badges: 6px
+
+### ATMOSPHERIC EFFECTS (apply to root layout)
+
+1. **Film grain noise overlay** — subtle cinematic texture:
+```css
+.noise::after {
+  content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+```
+
+2. **Ambient glow system** — two floating gradient orbs behind content:
+```css
+.ambient-glow {
+  position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none;
+  animation: ambient-float 8s ease-in-out infinite;
+}
+@keyframes ambient-float { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
+```
+- Glow 1: 500px, top-center, rgba(229,9,20,0.04)
+- Glow 2: 300px, bottom-right, rgba(167,139,250,0.04), animation-delay 4s
+
+3. **Scroll progress indicator** — thin 2px red line at very top of viewport:
+```css
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 2px; z-index: 99999;
+  background: #e50914; transform-origin: left;
+  transition: none;
+}
+```
+Update width via JS based on scroll percentage.
+
+### NAVBAR
+- Height: 64px, padding: 0 56px
+- Bottom border: 1px solid rgba(255,255,255,0.04)
+- Logo: Playfair Display 800, "Cine" white, "Stream" with the "S" in #e50914 — use `<em>` with font-style:normal, color:#e50914
+- Nav links: Instrument Sans, 12px, weight 500, color rgba(255,255,255,0.3)
+- Active link: color #fff with a 1px #e50914 underline (position absolute, bottom 0)
+- Hover: color transitions to #fff over 0.15s
+- Search pill on right: glass bg, search icon + "Search anything..." + "/" kbd shortcut badge
+  - "/" badge: 9px font, rgba(255,255,255,0.15) color, rgba(255,255,255,0.05) bg, 4px radius
+- Notification bell: 32px circle, 1px border, red dot (5px) top-right position absolute
+- Avatar: 34px circle, 2px border rgba(229,9,20,0.4), bg rgba(229,9,20,0.1), initial letter centered
+- Scroll behavior: transparent at top, transitions to glass bg (rgba(3,3,5,0.8) + backdrop-blur 20px) after 50px scroll, 0.3s transition
+
+### HOMEPAGE
+
+**Hero Section** — two column layout, 64px top padding:
+
+LEFT COLUMN (max-width 520px):
+- Chip row: pill badges — "Trending #1" (rgba(229,9,20,0.15) bg, rgba(229,9,20,0.3) border, #ff6b6b text), "TV-MA" (glass), "4 Seasons" (glass)
+- Title: Playfair Display 900, 56px, letter-spacing -2px, line-height 0.92. Movie name on two lines. Pure white.
+- Meta row: inline items with 3px dot separators
+  - Rating with mini progress bar: number + 40px wide bar (4px tall, rgba(255,255,255,0.08) bg, #46d369 fill)
+  - Year range, genres, avg runtime
+  - All in Instrument Sans, 12px, rgba(255,255,255,0.35)
+- Description: Instrument Sans, 14px, line-height 1.8, rgba(255,255,255,0.3), max 2 lines
+- Action buttons row:
+  - "Watch now": #e50914 bg, white text, play icon, 12px radius. Hover: lift 1px, red glow shadow
+  - "Watchlist": glass bg, white text, heart icon, 1px border. Hover: brighter bg
+  - Share: 40px circle icon button, 1px border. Hover: brighter bg and border
+
+RIGHT COLUMN (380px):
+- Featured card: glass panel, 20px radius
+- Image area: 220px tall, "Featured" badge top-left (glass bg, blur, 9px font, 6px radius)
+- Info: title (18px, weight 700) + rating badge (green pill), genre tags (tiny glass pills), short description, two CTA buttons ("Watch" red, "+ List" glass)
+
+**Section Headers:**
+- Title (Instrument Sans, 15px, weight 700) + thin extending line (flex:1, 1px, rgba(255,255,255,0.04), margin-left 12px) + "See all >" link on right
+- This extending line pattern is a SIGNATURE element — use on every section
+
+**Top 5 This Week:**
+- 5 equal-width cards in a row
+- Each card: 170px tall, 14px radius, glass border
+- Rank number: Playfair Display 900, 28px, rgba(255,255,255,0.06) — top-left inside, purely decorative watermark
+- Hover: translateY(-4px), red border glow (rgba(229,9,20,0.2)), shadow deepens
+- Overlay fades in with title + rating + year
+- Play button: red circle, scales in from center
+
+**Additional Carousels (at least 3):**
+- "Continue watching" — horizontal cards with progress bars showing watch completion
+- "Because you watched [title]" — poster cards from TMDB similar endpoint
+- "New releases" — poster cards with "NEW" badge
+
+### DETAIL PAGE
+- Backdrop: 60vh, heavy gradient fade to #030305 at bottom
+- Content overlaps backdrop by 100px (negative margin)
+- Poster: rounded-16px, box-shadow 0 20px 60px rgba(0,0,0,0.5)
+- Title: Playfair Display 900, 40px
+- Meta as chip pills (year, runtime, rating, genres)
+- Overview: Instrument Sans, 14px, max-w-2xl, line-height 1.8
+- Cast: circular photos (64px) with name below, horizontal scroll
+- "More Like This" grid at bottom
+- TV shows: season tabs as pill buttons (active = white bg, dark text), episode list below
+
+### WATCH PAGE
+- Player: full-width, zero side margins, 16:9 aspect ratio, black bg
+- Below player: glass info panel
+- Server selector: glass pills in a row. Active pill: rgba(229,9,20,0.15) bg, rgba(229,9,20,0.3) border, #ff6b6b text
+- Episode sidebar (TV only): glass cards, custom scrollbar (3px wide, rgba(255,255,255,0.1) thumb)
+- Currently playing: red left border accent, subtle red bg tint
+
+### SEARCH PAGE
+- Large search input: glass bg, 16px radius, 48px tall, Instrument Sans 16px
+- Auto-focus on page load
+- Debounced 300ms
+- Results grid of poster cards
+- Empty state: elegant centered text
+
+### BROWSE PAGES
+- Genre filter: horizontal scroll of glass pills
+- Responsive poster grid
+- Infinite scroll or load more
+
+### MICRO-INTERACTIONS (12 required — this makes it feel $10k):
+
+1. **Button press**: transform scale(0.97) on :active, instant. 0.15s ease transition on release.
+2. **Card hover**: 0.3s transition, translateY(-4px), border color shift to rgba(255,255,255,0.1), shadow deepens.
+3. **Link hover**: color transition 0.15s. Underline slides in from left (width 0% → 100%, using ::after pseudo-element).
+4. **Focus rings**: box-shadow 0 0 0 2px rgba(229,9,20,0.3) on all interactive elements on :focus-visible.
+5. **Page load stagger**: hero elements animate in sequence — chips (0s), title (0.1s), meta (0.15s), desc (0.2s), buttons (0.3s). Use framer-motion staggerChildren.
+6. **Skeleton loaders**: animated pulse bg oscillating rgba(255,255,255,0.02) ↔ rgba(255,255,255,0.05) over 1.5s. Use for every async content block.
+7. **Image reveal**: images start opacity 0, fade to 1 over 0.3s when loaded (onLoad handler).
+8. **Scroll progress bar**: 2px red line at top of page grows with scroll position.
+9. **Toast notifications**: glass panel slides in from bottom-right for "Added to watchlist", "Removed from watchlist". Auto-dismiss after 3s with fade out.
+10. **Navbar scroll transition**: transparent → glass bg at 50px scroll, 0.3s transition.
+11. **Carousel arrows**: opacity 0 by default, fade in on section hover, 0.2s transition.
+12. **Rating tooltip**: hovering a rating badge shows a small tooltip "X/10 on TMDB" with glass bg, 0.15s fade in.
+
+### RESPONSIVE
+- Max content width: 1400px, mx-auto
+- Below 1200px: hero single column, featured card stacks below
+- Below 768px: simplified hover states, hamburger menu, no ambient glows (performance)
+- Below 480px: full-width cards, compact spacing, no rank numbers
+
+### ACCESSIBILITY
+- All interactive elements keyboard-focusable
+- :focus-visible rings (not :focus — only show for keyboard users)
+- @media (prefers-reduced-motion: reduce) — disable all animations except opacity transitions
+- Alt text on all next/image elements
+- Semantic HTML: nav, main, section, article, h1-h3 hierarchy
+- ARIA labels on icon-only buttons
+
+### PERFORMANCE
+- next/image for ALL images with width/height/priority
+- Lazy load below-fold carousels
+- CSS containment on card grid containers
+- Debounce scroll event handlers with requestAnimationFrame
+- No layout shift: explicit dimensions on all media
+
+---
+
+## PHASE 3: IMPECCABLE POLISH WORKFLOW
+
+After the full build is working on localhost, run these commands IN ORDER.
+Each step fixes a specific dimension. Do NOT skip steps.
+
+### Step 1: Audit — find all issues
+```
+/audit
+```
+Fix every P0 (critical) and P1 (high) issue. These are blockers — accessibility violations, broken responsive layouts, performance problems. Log what was found and fixed.
+
+### Step 2: Typeset — perfect the typography
+```
+/typeset
+```
+Let Impeccable review the full type system. It should respect our Playfair Display + Instrument Sans pairing. Fix any sizing inconsistencies, weight problems, line-height issues, or hierarchy gaps. Make sure the serif display headings and sans body text create clear visual contrast.
+
+### Step 3: Arrange — fix layout and spacing
+```
+/arrange
+```
+Fix visual rhythm across all pages. Make sure glass panels breathe with proper padding. Check carousel spacing, section gaps, and the overall vertical flow. The premium feel comes from GENEROUS whitespace — don't cramp anything.
+
+### Step 4: Colorize — review color usage
+```
+/colorize
+```
+Audit the color palette. Red (#e50914) should be used as a SURGICAL accent — watch buttons, active states, the scroll bar, badges. Not splashed everywhere. Most of the UI should be white text on near-black with glass borders. Check contrast ratios. Make sure rating colors (green/yellow/red) are accessible.
+
+### Step 5: Animate — review all motion
+```
+/animate
+```
+Review every animation and micro-interaction. The 12 interactions listed above should ALL be implemented. Add any missing ones. Remove any that feel gratuitous or janky. Motion should feel INTENTIONAL — ease-out for entries, ease-in for exits. No bounce easing. No overshooting. Smooth and confident.
+
+### Step 6: Harden — production-ready resilience
+```
+/harden
+```
+Add error handling for failed TMDB fetches (show graceful empty states). Handle text overflow on long movie titles (line-clamp). Handle missing poster images (fallback placeholder). Handle edge cases: empty watchlist, no search results, slow network. Add proper loading states everywhere.
+
+### Step 7: Adapt — responsive perfection
+```
+/adapt
+```
+Review every page at 1920px, 1440px, 1200px, 1024px, 768px, 480px, 375px. Fix any breakpoint issues. Mobile should still feel premium — not a stripped-down version, but a thoughtfully adapted one. Touch targets should be minimum 44px.
+
+### Step 8: Critique — UX design review
+```
+/critique
+```
+Get a full UX design review. Is the visual hierarchy clear? Does the eye flow naturally? Does the emotional tone feel cinematic and sophisticated? Is navigation intuitive? Fix any issues identified.
+
+### Step 9: Distill — remove unnecessary complexity
+```
+/distill
+```
+Look for anything that doesn't serve the user. Unnecessary borders, redundant elements, cluttered sections. The premium feel comes from what you REMOVE, not what you add. If something can be simpler, simplify it.
+
+### Step 10: Polish — final refinement
+```
+/polish
+```
+Final pass. Check every single page. Every hover state. Every transition. Every loading state. Every empty state. This is the ship-ready pass. Nothing should feel rough, unfinished, or inconsistent.
+
+### Step 11: Final Audit — confirm clean
+```
+/audit
+```
+One last audit. P0 and P1 should be ZERO. P2 should be minimal. If any issues remain, fix them now.
+
+---
+
+## SUMMARY — FULL WORKFLOW
+
+```
+1.  /teach-impeccable          → setup design context
+2.  Build Phase 2              → implement the full premium design
+3.  /audit                     → find all issues
+4.  /typeset                   → perfect typography
+5.  /arrange                   → fix layout + spacing
+6.  /colorize                  → review color usage
+7.  /animate                   → review + add motion
+8.  /harden                    → error handling + edge cases
+9.  /adapt                     → responsive perfection
+10. /critique                  → UX design review
+11. /distill                   → remove unnecessary complexity
+12. /polish                    → final ship-ready pass
+13. /audit                     → confirm P0/P1 = zero
+```
+
+Do NOT push to GitHub. localhost only.
